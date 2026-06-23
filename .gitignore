@@ -1,0 +1,24 @@
+# Secrets & real config — NEVER commit
+.env
+credentials/*
+!credentials/linkedin/
+credentials/linkedin/*
+!credentials/linkedin/*.example.json
+!credentials/gemini/
+credentials/gemini/*
+!credentials/gemini/*.example.txt
+
+# Runtime state / generated artifacts (keep the empty workspace dir)
+workspace/*
+!workspace/.gitkeep
+*-image.png
+*.mmd
+last-post.json
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+*.swp
