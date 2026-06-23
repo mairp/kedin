@@ -63,10 +63,15 @@ flowchart LR
     AG -- "abstract topic" --> GEN --> GG
     REND -- "outbox-image.png" --> AG
 
-    classDef user fill:#2563eb,stroke:#1e3a8a,color:#fff
-    classDef oc fill:#7c3aed,stroke:#5b21b6,color:#fff
-    classDef tool fill:#0d9488,stroke:#0f766e,color:#fff
-    classDef ext fill:#ea580c,stroke:#9a3412,color:#fff
+    %% Harmonious soft palette: cool blue → indigo → teal, with one warm amber accent; dark legible text.
+    classDef user fill:#dbeafe,stroke:#60a5fa,color:#1e3a8a
+    classDef oc   fill:#e0e7ff,stroke:#818cf8,color:#3730a3
+    classDef tool fill:#cffafe,stroke:#22d3ee,color:#155e75
+    classDef ext  fill:#fef3c7,stroke:#fbbf24,color:#92400e
+
+    style OC fill:#f8fafc,stroke:#e2e8f0,color:#475569
+    style TK fill:#f8fafc,stroke:#e2e8f0,color:#475569
+    linkStyle default stroke:#94a3b8,stroke-width:1.5px
 ```
 
 **Flow:** you DM a command → OpenClaw routes it to the Kedin agent → the agent drafts the post and a
