@@ -5,10 +5,12 @@
 #   post.sh --dry-run             -> build + print the request, publish nothing
 #   post.sh --image [--alt TEXT]  -> attach the approved outbox image ($KEDIN_OUTBOX_IMAGE)
 #   post.sh --image FILE          -> attach a specific image file
+#   post.sh --document [FILE] --title TEXT  -> attach a PDF (renders as a carousel)
 set -eo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTBOX="${KEDIN_OUTBOX:-$HERE/workspace/outbox.md}"
 OUTBOX_IMAGE="${KEDIN_OUTBOX_IMAGE:-$HERE/workspace/outbox-image.png}"
+OUTBOX_DOC="${KEDIN_OUTBOX_DOC:-$HERE/workspace/outbox-doc.pdf}"
 
 [[ -f "$OUTBOX" ]] || { echo "[kedin] no draft at $OUTBOX — write the approved post there first" >&2; exit 1; }
 
@@ -21,6 +23,10 @@ while [[ $# -gt 0 ]]; do
     --image)
       if [[ -n "${2:-}" && "$2" != --* ]]; then PASS+=("--image" "$2"); shift 2;
       else PASS+=("--image" "$OUTBOX_IMAGE"); shift; fi ;;
+    --title) PASS+=("--title" "${2:-}"); shift 2 ;;
+    --document)
+      if [[ -n "${2:-}" && "$2" != --* ]]; then PASS+=("--document" "$2"); shift 2;
+      else PASS+=("--document" "$OUTBOX_DOC"); shift; fi ;;
     *) echo "[kedin] unknown arg: $1" >&2; exit 1 ;;
   esac
 done

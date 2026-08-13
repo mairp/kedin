@@ -128,6 +128,36 @@ async function uploadImage(c, filePath) {
   return v.image;
 }
 
+// Upload a local PDF via the Documents API and return its URN (urn:li:document:...).
+// Same three-step shape as uploadImage, against /rest/documents. LinkedIn renders an
+// attached PDF as a swipeable carousel in the feed. Requires a valid access token on c.
+async function uploadDocument(c, filePath) {
+  const buf = fs.readFileSync(filePath);
+  const init = await request('POST', 'https://api.linkedin.com/rest/documents?action=initializeUpload', {
+    headers: {
+      Authorization: 'Bearer ' + c.access_token,
+      'Content-Type': 'application/json',
+      'LinkedIn-Version': LINKEDIN_VERSION,
+      'X-Restli-Protocol-Version': '2.0.0',
+    },
+    body: JSON.stringify({ initializeUploadRequest: { owner: c.member_urn } }),
+  });
+  if (init.status !== 200) throw new Error('document initializeUpload failed (' + init.status + '): ' + init.body);
+  const v = (JSON.parse(init.body) || {}).value || {};
+  if (!v.uploadUrl || !v.document) throw new Error('initializeUpload missing uploadUrl/document: ' + init.body);
+
+  const put = await request('PUT', v.uploadUrl, {
+    headers: {
+      Authorization: 'Bearer ' + c.access_token,
+      'Content-Type': 'application/octet-stream',
+      'Content-Length': buf.length,
+    },
+    body: buf,
+  });
+  if (put.status !== 200 && put.status !== 201) throw new Error('document upload PUT failed (' + put.status + '): ' + put.body);
+  return v.document;
+}
+
 // Record the most recently published post so /delete and /editpost can target "previous"/-1.
 const LAST_POST = process.env.KEDIN_LAST_POST || path.join(__dirname, 'workspace', 'last-post.json');
 function saveLastPost(obj) {
@@ -137,4 +167,4 @@ function loadLastPost() {
   try { return JSON.parse(fs.readFileSync(LAST_POST, 'utf8')); } catch (_) { return null; }
 }
 
-module.exports = { CREDS, REDIRECT_URI, SCOPES, LINKEDIN_VERSION, LAST_POST, loadCreds, saveCreds, request, form, refreshAccessToken, ensureToken, stripEmoji, sanitizeText, uploadImage, saveLastPost, loadLastPost };
+module.exports = { CREDS, REDIRECT_URI, SCOPES, LINKEDIN_VERSION, LAST_POST, loadCreds, saveCreds, request, form, refreshAccessToken, ensureToken, stripEmoji, sanitizeText, uploadImage, uploadDocument, saveLastPost, loadLastPost };

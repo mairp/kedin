@@ -48,7 +48,7 @@ flowchart LR
 
     subgraph TK["Kedin toolkit (Node + bash)"]
         direction TB
-        POST["post.js / repost.js<br/>(lib.js: OAuth, Images API)"]:::tool
+        POST["post.js / repost.js<br/>(lib.js: OAuth, Images + Documents API)"]:::tool
         REND["render-diagram.sh<br/>(mermaid-cli + Chromium)"]:::tool
         GEN["gen-image.sh<br/>(Gemini fallback)"]:::tool
     end
@@ -83,9 +83,9 @@ diagram parts; the **persona/behavior** lives in `agent-config/` and runs inside
 
 ```
 kedin/
-├─ lib.js                 # shared: OAuth/refresh, HTTPS, Images API upload, emoji/Unicode sanitize
+├─ lib.js                 # shared: OAuth/refresh, HTTPS, Images + Documents API upload, emoji/Unicode sanitize
 ├─ oauth.js               # one-time LinkedIn OAuth (url / exchange <code>) → stores token + member URN
-├─ post.js / post.sh      # publish outbox.md (text or --image); --dry-run builds the request, posts nothing
+├─ post.js / post.sh      # publish outbox.md (text, --image, or --document PDF); --dry-run posts nothing
 ├─ repost.js / repost.sh  # reshare a post with your commentary
 ├─ delete.js / editpost.js (+ .sh)  # delete / edit a published post
 ├─ gen-image.js / gen-image.sh      # Gemini diffusion image (house-styled UML look)
